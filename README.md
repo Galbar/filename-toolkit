@@ -3,8 +3,8 @@ filename-toolkit
 
 A toolkit for editing multiple filenames at the same time.
 
-Usage: filename-toolkit [-r <string|regex> [-w <string>]] [-p <string>] [-a <string>] [-d <dir>] [-l] [-m <regex>] [-h] [-t]
-
+Usage: `filename-toolkit [-r <string|regex> [-w <string>]] [-p <string>] [-a <string>] [-d <dir>] [-l] [-m <regex>] [-h] [-t]`
+```
 -d | --dir <directory>        Directory to work on. Defaults to current.
 -m | --match <regex>          Only process files with filename matching regex.
 -l | --list                   Show a list of the files processed.
@@ -23,3 +23,4 @@ Usage: filename-toolkit [-r <string|regex> [-w <string>]] [-p <string>] [-a <str
 -t | --test                   Changes won't be applied. 
                               To see changes to be applied use -l.
 -h | --help                   Show this text.
+```
