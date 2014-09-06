@@ -7,35 +7,56 @@ import re
 import argparse
 
 
+class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter):
+    pass
+
+
 def run(directory, match, replace, replace_with, prepend, append, display_list, test):
-    regex = re.compile(match)
     """ Appends and prepends strings to filenames in a given dir matching a regex. Optionally displays modified files
     and can run without making changes if in test mode  """
 
+    regex = re.compile(match)
     for filename in os.listdir(directory):
-        if regex.match(filename):
+        if os.path.isfile(directory + filename) and regex.match(filename):
             new_filename = filename
             new_filename = re.sub(replace, replace_with, filename)
             new_filename = prepend + new_filename + append
-            if not test:
+            if not test and filename != new_filename:
                 os.rename(directory + filename, directory + new_filename)
             if display_list:
-                print filename + (" => " + new_filename if new_filename != filename else "")
+                print (directory + filename + (" => " + directory + new_filename if new_filename != filename else ""))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="A toolkit for editing multiple filenames at once")
+    parser = argparse.ArgumentParser(formatter_class=CustomFormatter,
+                                     description="A toolkit for editing multiple filenames at once",
+                                     epilog="""\
+You may use named groups on the first one and refer to them on the second one
+\g<name>, or use annonymous groups, they're named in order starting from 1.
 
-    parser.add_argument('-d', '--dir', help='Directory to work on. Defaults to current', default='.')
-    parser.add_argument('-m', '--match', help='Process files with given regex', default='.*')
+Examples: change filename from 21-03 to 03-21
+filename-toolkit -r "(?P<day>\d+)-(?P<month>\d+)" -w "\g<month>-\g<day>"
+filename-toolkit -r "(\d+)-(\d+)" -w "\g<2>-\g<1>"
+filename-toolkit -r "(\d+)-(\d+)" -w "\\2-\\1"\
+""")
+
+    parser.add_argument('-d', '--dir', help='Directory to work on. Defaults to current', default='./')
+    parser.add_argument('-m', '--match', help='Process files with given regex', default=['.*'], nargs='+')
     parser.add_argument('-p', '--prepend', help='Insert string at the beggining of filename', default='')
     parser.add_argument('-a', '--append', help='Insert string at the end of filename', default='')
     parser.add_argument('-l', '--list', help='Show list of processed files', action='store_true')
     parser.add_argument('-t', '--test', help="Changes won't be applied", action='store_true')
-    parser.add_argument('-r', '--replace', help="Replace string/regex with other string, defaults repace to ''",
-                        nargs='+', default=['']*2)
+    parser.add_argument('-r', '--replace',
+                        help="Replace string/regex with -w/--with value, if -w/--with not defined repace to ''",
+                        nargs='+', default=[''])
+    parser.add_argument('-w', '--with', help='Value tu replace matching -r/--replace strings', default=[''],
+                        nargs='+', dest="replace_with")
 
-    args = parser.parse_args(sys.argv[1:])
-    if len(args.replace) == 1:
-        args.replace.append('')
+    args = parser.parse_args()
+    if len(sys.argv) == 1:
+        parser.print_usage()
+        exit(0)
+    replace = ' '.join(args.replace)
+    replace_with = ' '.join(args.replace_with)
+    match = ' '.join(args.match)
 
-    run(args.dir, args.match, args.replace[0], args.replace[1], args.prepend, args.append, args.list, args.test)
+    run(args.dir, match, replace, replace_with, args.prepend, args.append, args.list, args.test)
