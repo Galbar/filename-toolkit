@@ -36,6 +36,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args(sys.argv[1:])
     if len(args.replace) == 1:
-        args.append('')
+        args.replace.append('')
 
     run(args.dir, args.match, args.replace[0], args.replace[1], args.prepend, args.append, args.list, args.test)
