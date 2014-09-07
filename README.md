@@ -5,7 +5,7 @@ A toolkit for editing multiple filenames at once.
 ### Usage
 ```
 filename-toolkit [-h] [-d DIR] [-m MATCH] [-p PREPEND] [-a APPEND] [-l]
-                 [-t] [-r REPLACE [WITH]] [-c COPY] [-e]
+                 [-r REPLACE [WITH]] [-c COPY] [-e] [-R] [-t]
                  [--version]
 ```
 
@@ -21,13 +21,14 @@ optional arguments:
   -a APPEND, --append APPEND
                         Insert string at the end of filename
   -l, --list            Show list of processed files
-  -t, --test            Changes won't be applied. Show list of processed files
   -r REPLACE [WITH], --replace REPLACE [WITH]
                         Replace string/regex with other string, defaults
                         repace to ''
   -c COPY, --copy COPY  Don't rename but copy files with new name to specified
                         dir.
   -e, --erase           Erase processed files
+  -R, --recursive       Process files recursively in each subdirectory
+  -t, --test            Changes won't be applied. Show list of processed files
   --version             show program's version number and exit
 ```
 In `-r/--replace`, you may use named groups in the first one and refer to them in the second one `\g<name>`, or use annonymous groups, they're named in order starting from `1` (`\g<1>` or `\1`).

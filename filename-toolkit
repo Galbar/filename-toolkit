@@ -12,7 +12,7 @@ class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescri
     pass
 
 
-def run(directory, match, replace, replace_with, prepend, append, display_list, test, copy, erase):
+def run(directory, match, replace, replace_with, prepend, append, display_list, test, copy, erase, recursive):
     """ Appends and prepends strings to filenames in a given dir matching a regex. Optionally displays modified files
     and can run without making changes if in test mode  """
 
@@ -42,6 +42,9 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
                        + ("(erased)" if erase else "")
                        + ((" => " + directory if not copy else " +> " + copy)
                           + new_filename if (new_filename != filename or copy) else ""))
+        elif recursive and os.path.isdir(directory + filename):
+            run(directory + filename + '/', match, replace, replace_with,
+                prepend, append, display_list, test, copy, erase, recursive)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A toolkit for editing multiple filenames at once")
@@ -51,13 +54,14 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--prepend', help='Insert string at the beggining of filename', default='')
     parser.add_argument('-a', '--append', help='Insert string at the end of filename', default='')
     parser.add_argument('-l', '--list', help='Show list of processed files', action='store_true')
-    parser.add_argument('-t', '--test', help="Changes won't be applied. Show list of processed files",
-                        action='store_true')
     parser.add_argument('-r', '--replace', help="Replace string/regex with other string, defaults repace to ''",
                         nargs='+', default=['']*2, metavar=('REPLACE', 'WITH'))
     parser.add_argument('-c', '--copy', help="Don't rename but copy files with new name to specified dir.")
     parser.add_argument('-e', '--erase', help='Erase processed files', action='store_true')
-    parser.add_argument('--version', action='version', version='%(prog)s 0.85')
+    parser.add_argument('-R', '--recursive', help='Process files recursively in each subdirectory', action='store_true')
+    parser.add_argument('-t', '--test', help="Changes won't be applied. Show list of processed files",
+                        action='store_true')
+    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
 
     args = parser.parse_args()
     if len(sys.argv) == 1:
@@ -72,4 +76,4 @@ if __name__ == "__main__":
         args.list = True
 
     run(args.dir, args.match, args.replace[0], args.replace[1], args.prepend, args.append, args.list, args.test,
-        args.copy, args.erase)
+        args.copy, args.erase, args.recursive)
