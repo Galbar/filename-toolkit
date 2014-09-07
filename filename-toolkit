@@ -29,15 +29,14 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=CustomFormatter,
                                      description="A toolkit for editing multiple filenames at once",
-                                     epilog="""\
-You may use named groups on the first one and refer to them on the second one
-\g<name>, or use annonymous groups, they're named in order starting from 1.
-
-Examples: change filename from 21-03 to 03-21
-filename-toolkit -r "(?P<day>\d+)-(?P<month>\d+)" -w "\g<month>-\g<day>"
-filename-toolkit -r "(\d+)-(\d+)" -w "\g<2>-\g<1>"
-filename-toolkit -r "(\d+)-(\d+)" -w "\\2-\\1"\
-""")
+                                     epilog=
+                                     "You may use named groups on the first one and refer to them on the second one\n"
+                                     + "\g<name>, or use annonymous groups, they're named in order starting from 1.\n\n"
+                                     + "Examples: change filename from 21-03 to 03-21\n"
+                                     + 'filename-toolkit -r "(?P<day>\d+)-(?P<month>\d+)" -w "\g<month>-\g<day>"\n'
+                                     + 'filename-toolkit -r "(\d+)-(\d+)" -w "\g<2>-\g<1>"\n'
+                                     + 'filename-toolkit -r "(\d+)-(\d+)" -w "\\2-\\1"'
+                                     )
 
     parser.add_argument('-d', '--dir', help='Directory to work on. Defaults to current', default='./')
     parser.add_argument('-m', '--match', help='Process files with given regex', default=['.*'], nargs='+')
