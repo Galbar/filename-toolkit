@@ -12,10 +12,26 @@ class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescri
     pass
 
 
+def makeDir(path):
+    dirs = re.split("/", path)
+    it = len(dirs)
+    current_dir = '/'.join(dirs[:it])
+    while it > 0 and not os.path.exists(current_dir):
+        it -= 1
+        current_dir = '/'.join(dirs[:it])
+    it += 1
+    while it < len(dirs):
+        os.mkdir('/'.join(dirs[:it]))
+        it += 1
+
+
 def run(directory, match, replace, replace_with, prepend, append, display_list, test, copy, erase, recursive):
     """ Appends and prepends strings to filenames in a given dir matching a regex. Optionally displays modified files
     and can run without making changes if in test mode  """
 
+    directory = (directory if directory[-1:] == '/' else directory + '/')
+    if copy:
+        copy = (copy if copy[-1:] == '/' else copy + '/')
     regex = re.compile(match)
     for filename in os.listdir(directory):
         if os.path.isfile(directory + filename) and regex.match(filename):
@@ -25,7 +41,7 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
             if not test:
                 if copy:
                     if not os.path.exists(copy):
-                        os.mkdir(copy)
+                        makeDir(copy)
                     try:
                         shutil.copyfile(directory + filename, copy + new_filename)
                     except IOError, e:
@@ -40,11 +56,11 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
             if display_list:
                 print (directory + filename
                        + ("(erased)" if erase else "")
-                       + ((" => " + directory if not copy else " +> " + copy)
+                       + (("\n  => " + directory if not copy else "\n  +> " + copy)
                           + new_filename if (new_filename != filename or copy) else ""))
         elif recursive and os.path.isdir(directory + filename):
-            run(directory + filename + '/', match, replace, replace_with,
-                prepend, append, display_list, test, copy, erase, recursive)
+            run(directory + filename, match, replace, replace_with,
+                prepend, append, display_list, test, (copy + filename if copy else copy), erase, recursive)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A toolkit for editing multiple filenames at once")
