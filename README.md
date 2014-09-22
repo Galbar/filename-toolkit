@@ -4,8 +4,8 @@ A toolkit for editing multiple filenames at once.
 
 ### Usage
 ```
-filename-toolkit [-h] [-d DIR] [-m MATCH] [-p PREPEND] [-a APPEND] [-l]
-                 [-r REPLACE [WITH]] [-c COPY] [-e] [-R] [-t]
+filename-toolkit [-h] [-d DIR] [-m MATCH] [-n] [-p PREPEND] [-a APPEND]
+                 [-l] [-r REPLACE [WITH ...]] [-c COPY] [-e] [-R] [-t]
                  [--version]
 ```
 
@@ -16,6 +16,7 @@ optional arguments:
   -d DIR, --dir DIR     Directory to work on. Defaults to current
   -m MATCH, --match MATCH
                         Process files with given regex
+  -n, --negative        All files not matching will be processed
   -p PREPEND, --prepend PREPEND
                         Insert string at the beggining of filename
   -a APPEND, --append APPEND

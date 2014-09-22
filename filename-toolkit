@@ -25,7 +25,7 @@ def makeDir(path):
         it += 1
 
 
-def run(directory, match, replace, replace_with, prepend, append, display_list, test, copy, erase, recursive):
+def run(directory, match, replace, replace_with, prepend, append, display_list, test, copy, erase, recursive, negative):
     """ Appends and prepends strings to filenames in a given dir matching a regex. Optionally displays modified files
     and can run without making changes if in test mode  """
 
@@ -34,7 +34,8 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
         copy = (copy if copy[-1:] == '/' else copy + '/')
     regex = re.compile(match)
     for filename in os.listdir(directory):
-        if os.path.isfile(directory + filename) and regex.match(filename):
+        if (os.path.isfile(directory + filename) and
+                ((regex.match(filename) and not negative) or (not regex.match(filename) and negative))):
             new_filename = filename
             new_filename = re.sub(replace, replace_with, filename)
             new_filename = prepend + new_filename + append
@@ -67,6 +68,7 @@ if __name__ == "__main__":
 
     parser.add_argument('-d', '--dir', help='Directory to work on. Defaults to current', default='./')
     parser.add_argument('-m', '--match', help='Process files with given regex', default='.*')
+    parser.add_argument('-n', '--negative', help='All files not matching will be processed', action='store_true')
     parser.add_argument('-p', '--prepend', help='Insert string at the beggining of filename', default='')
     parser.add_argument('-a', '--append', help='Insert string at the end of filename', default='')
     parser.add_argument('-l', '--list', help='Show list of processed files', action='store_true')
@@ -92,4 +94,4 @@ if __name__ == "__main__":
         args.list = True
 
     run(args.dir, args.match, args.replace[0], args.replace[1], args.prepend, args.append, args.list, args.test,
-        args.copy, args.erase, args.recursive)
+        args.copy, args.erase, args.recursive, args.negative)
