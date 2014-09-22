@@ -79,7 +79,7 @@ if __name__ == "__main__":
     parser.add_argument('-R', '--recursive', help='Process files recursively in each subdirectory', action='store_true')
     parser.add_argument('-t', '--test', help="Changes won't be applied. Show list of processed files",
                         action='store_true')
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0.1')
+    parser.add_argument('--version', action='version', version='%(prog)s 1.0.2')
 
     args = parser.parse_args()
     if len(sys.argv) == 1:
