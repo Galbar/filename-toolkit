@@ -61,7 +61,7 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
                           + new_filename if (new_filename != filename or copy) else ""))
         elif recursive and os.path.isdir(directory + filename):
             run(directory + filename, match, replace, replace_with,
-                prepend, append, display_list, test, (copy + filename if copy else copy), erase, recursive)
+                prepend, append, display_list, test, (copy + filename if copy else copy), erase, recursive, negative)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A toolkit for editing multiple filenames at once")
