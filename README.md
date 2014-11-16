@@ -5,8 +5,8 @@ A toolkit for editing multiple filenames at once.
 ### Usage
 ```
 filename-toolkit [-h] [-d DIR] [-m MATCH] [-n] [-p PREPEND] [-a APPEND]
-                 [-l] [-r REPLACE [WITH ...]] [-c COPY] [-e] [-R] [-t]
-                 [--version]
+                 [-l] [-r REPLACE [WITH ...]] [-c COPY] [-e] [-R]
+                 [-C COMMAND] [-t] [--version]
 ```
 
 ### Help
@@ -22,13 +22,16 @@ optional arguments:
   -a APPEND, --append APPEND
                         Insert string at the end of filename
   -l, --list            Show list of processed files
-  -r REPLACE [WITH], --replace REPLACE [WITH]
+  -r REPLACE [WITH ...], --replace REPLACE [WITH ...]
                         Replace string/regex with other string, defaults
                         repace to ''
   -c COPY, --copy COPY  Don't rename but copy files with new name to specified
                         dir.
   -e, --erase           Erase processed files
   -R, --recursive       Process files recursively in each subdirectory
+  -C COMMAND, --command COMMAND
+                        Run given command for each file (refer filename with
+                        '$@' and filename without type '$<').
   -t, --test            Changes won't be applied. Show list of processed files
   --version             show program's version number and exit
 ```
