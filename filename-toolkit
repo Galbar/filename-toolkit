@@ -8,9 +8,7 @@ import re
 import argparse
 import subprocess
 
-
-class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter):
-    pass
+VERSION = '1.1.0'
 
 
 def makeDir(path):
@@ -25,6 +23,7 @@ def makeDir(path):
         os.mkdir('/'.join(dirs[:it]))
         it += 1
 
+
 def buildCommand(ft, command):
     ft = ft.replace(" ", "\ ")
     ft = ft.replace(",", "\,")
@@ -36,9 +35,11 @@ def buildCommand(ft, command):
     return re.sub("\#\<", f, c)
 
 
-def run(directory, match, replace, replace_with, prepend, append, display_list, test, copy, erase, recursive, negative, command):
-    """ Appends and prepends strings to filenames in a given dir matching a regex. Optionally displays modified files
-    and can run without making changes if in test mode  """
+def run(directory, match, replace, replace_with, prepend, append, display_list,
+        test, copy, erase, recursive, negative, command):
+    """ Appends and prepends strings to filenames in a given dir matching a
+    regex. Optionally displays modified files and can run without making changes
+    if in test mode  """
 
     directory = (directory if directory[-1:] == '/' else directory + '/')
     if copy:
@@ -47,7 +48,8 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
     regex = re.compile(match)
     for filename in os.listdir(directory):
         if (os.path.isfile(directory + filename) and
-                ((regex.match(filename) and not negative) or (not regex.match(filename) and negative))):
+                ((regex.match(filename) and not negative) or
+                (not regex.match(filename) and negative))):
             new_filename = filename
             new_filename = re.sub(replace, replace_with, filename)
             new_filename = prepend + new_filename + append
@@ -56,7 +58,8 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
                     if not os.path.exists(copy):
                         makeDir(copy)
                     try:
-                        shutil.copyfile(directory + filename, copy + new_filename)
+                        shutil.copyfile(directory + filename,
+                                        copy + new_filename)
                     except IOError, e:
                         print e
                         exit(-1)
@@ -65,40 +68,62 @@ def run(directory, match, replace, replace_with, prepend, append, display_list, 
                 elif filename != new_filename:
                     os.rename(directory + filename, directory + new_filename)
                 if command:
-                    c = buildCommand(directory + (filename if copy or filename == new_filename else new_filename), command)
+                    c = buildCommand(directory + (filename if copy or
+                                                  filename == new_filename else
+                                                  new_filename), command)
                     subprocess.call(c, shell=True)
                 if erase:
-                    os.remove(directory + (filename if copy or filename == new_filename else new_filename))
+                    os.remove(directory + (filename if copy or
+                              filename == new_filename else new_filename))
             if display_list:
                 if command and c == "":
-                    c = buildCommand(directory + (filename if copy or filename == new_filename else new_filename), command)
+                    c = buildCommand(directory +
+                                     (filename if copy or
+                                      filename == new_filename else
+                                      new_filename), command)
                 print (directory + filename
                        + ("\n $>" + c if command else "")
                        + ("(erased)" if erase else "")
-                       + (("\n  => " + directory if not copy else "\n  +> " + copy)
-                          + new_filename if (new_filename != filename or copy) else ""))
+                       + (("\n  => " + directory if not copy else "\n  +> " +
+                           copy) + new_filename if (new_filename != filename or
+                                                    copy) else ""))
         elif recursive and os.path.isdir(directory + filename):
             run(directory + filename, match, replace, replace_with,
-                prepend, append, display_list, test, (copy + filename if copy else copy), erase, recursive, negative, command)
+                prepend, append, display_list, test,
+                (copy + filename if copy else copy), erase, recursive, negative,
+                command)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="A toolkit for editing multiple filenames at once")
-
-    parser.add_argument('-d', '--dir', help='Directory to work on. Defaults to current', default='./')
-    parser.add_argument('-m', '--match', help='Process files with given regex', default='.*')
-    parser.add_argument('-n', '--negative', help='All files not matching will be processed', action='store_true')
-    parser.add_argument('-p', '--prepend', help='Insert string at the beggining of filename', default='')
-    parser.add_argument('-a', '--append', help='Insert string at the end of filename', default='')
-    parser.add_argument('-l', '--list', help='Show list of processed files', action='store_true')
-    parser.add_argument('-r', '--replace', help="Replace string/regex with other string, defaults repace to ''",
-                        nargs='+', default=['']*2, metavar=('REPLACE', 'WITH'))
-    parser.add_argument('-c', '--copy', help="Don't rename but copy files with new name to specified dir.")
-    parser.add_argument('-e', '--erase', help='Erase processed files', action='store_true')
-    parser.add_argument('-R', '--recursive', help='Process files recursively in each subdirectory', action='store_true')
-    parser.add_argument('-C', '--command', help="Run given command for each file (refer filename with '$@' and filename without type '$<').")
-    parser.add_argument('-t', '--test', help="Changes won't be applied. Show list of processed files",
+    parser = argparse.ArgumentParser(description='A toolkit for editing' +
+                                     ' multiple filenames at once')
+    parser.add_argument('-d', '--dir', help='Directory to work on. Defaults' +
+                        ' to current', default='./')
+    parser.add_argument('-m', '--match', help='Process files with given regex',
+                        default='.*')
+    parser.add_argument('-n', '--negative', help='All files not matching will' +
+                        ' be processed', action='store_true')
+    parser.add_argument('-p', '--prepend', help='Insert string at the' +
+                        ' beggining of filename', default='')
+    parser.add_argument('-a', '--append', help='Insert string at the end of' +
+                        ' filename', default='')
+    parser.add_argument('-l', '--list', help='Show list of processed files',
                         action='store_true')
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0.2')
+    parser.add_argument('-r', '--replace', help='Replace string/regex with' +
+                        ' other string, defaults repace to \'\'', nargs='+',
+                        default=['']*2, metavar=('REPLACE', 'WITH'))
+    parser.add_argument('-c', '--copy', help='Don\'t rename but copy files' +
+                        ' with new name to specified dir.')
+    parser.add_argument('-e', '--erase', help='Erase processed files',
+                        action='store_true')
+    parser.add_argument('-R', '--recursive', help='Process files recursively' +
+                        ' in each subdirectory', action='store_true')
+    parser.add_argument('-C', '--command', help='Run given command for each' +
+                        ' file (refer filename with \'#@\' and filename' +
+                        ' without type \'#<\').')
+    parser.add_argument('-t', '--test', help='Changes won\'t be applied.' +
+                        ' Show list of processed files', action='store_true')
+    parser.add_argument('--version', action='version', version='%(prog)s ' +
+                        VERSION)
 
     args = parser.parse_args()
     if len(sys.argv) == 1:
@@ -107,15 +132,18 @@ if __name__ == "__main__":
     if len(args.replace) == 1:
         args.append('')
     if len(args.replace) > 2:
-        print parser.prog + ": error: argument -r/--replace: expected at most two arguments"
+        print (parser.prog + ': error: argument -r/--replace: expected at' +
+               ' most two arguments')
         exit(-1)
     if args.test:
         args.list = True
     if args.erase:
-        confirm = raw_input("You are about to permanently delete files! Are you sure? (y/n): ")
+        confirm = raw_input('You are about to permanently delete files!' +
+                            ' Are you sure? (y/n): ')
         if confirm != "y":
-            print "Aborting"
+            print ('Aborting')
             sys.exit()
 
-    run(args.dir, args.match, args.replace[0], args.replace[1], args.prepend, args.append, args.list, args.test,
-        args.copy, args.erase, args.recursive, args.negative, args.command)
+    run(args.dir, args.match, args.replace[0], args.replace[1], args.prepend,
+        args.append, args.list, args.test, args.copy, args.erase,
+        args.recursive, args.negative, args.command)

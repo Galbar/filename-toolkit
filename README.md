@@ -31,7 +31,7 @@ optional arguments:
   -R, --recursive       Process files recursively in each subdirectory
   -C COMMAND, --command COMMAND
                         Run given command for each file (refer filename with
-                        '$@' and filename without type '$<').
+                        '#@' and filename without type '#<').
   -t, --test            Changes won't be applied. Show list of processed files
   --version             show program's version number and exit
 ```
@@ -48,3 +48,6 @@ In `-r/--replace`, you may use named groups in the first one and refer to them i
 
 ##### Remove 5 characters from beginning of filename
 `filename-toolkit -r "^.*{5}"`
+
+##### Add to a git repo files with matching pattern
+`filename-toolkit -m "P[3-6].py" -l -C "git add #@"`
