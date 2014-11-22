@@ -42,8 +42,10 @@ In `-r/--replace`, you may use named groups in the first one and refer to them i
 `filename-toolkit -r "substring"`
 
 ##### Change filename from 21-03 to 03-21
-`filename-toolkit -r "(?P<day>\d+)-(?P<month>\d+)" "\g<month>-\g<day>"`
-`filename-toolkit -r "(\d+)-(\d+)" "\g<2>-\g<1>"`
+`filename-toolkit -r "(?P<day>\d+)-(?P<month>\d+)" "\g<month>-\g<day>"`  
+or  
+`filename-toolkit -r "(\d+)-(\d+)" "\g<2>-\g<1>"`  
+or  
 `filename-toolkit -r "(\d+)-(\d+)" "\2-\1"`
 
 ##### Remove 5 characters from beginning of filename
