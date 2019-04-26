@@ -25,14 +25,14 @@ def makeDir(path):
 
 
 def buildCommand(ft, command):
-    ft = ft.replace(" ", "\ ")
-    ft = ft.replace(",", "\,")
-    ft = ft.replace("'", "\\'")
-    ft = ft.replace("(", "\\(")
-    ft = ft.replace(")", "\\)")
-    f = ft[:-len(re.findall("(?=(\..*$))", ft)[-1])]
-    c = re.sub("\#\@", ft, command)
-    return re.sub("\#\<", f, c)
+    ft = ft.replace(' ', '\ ')
+    ft = ft.replace(',', '\,')
+    ft = ft.replace('\'', '\\\'')
+    ft = ft.replace('(', '\\(')
+    ft = ft.replace(')', '\\)')
+    f = ft[:-len(re.findall('(?=(\..*$))', ft)[-1])]
+    c = re.sub('\#\@', ft, command)
+    return re.sub('\#\<', f, c)
 
 
 def run(directory, match, replace, replace_with, prepend, append, display_list,
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     if args.erase:
         confirm = raw_input('You are about to permanently delete files!' +
                             ' Are you sure? (y/n): ')
-        if confirm != "y":
+        if confirm != 'y':
             print ('Aborting')
             sys.exit()
 
